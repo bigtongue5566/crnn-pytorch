@@ -10,15 +10,20 @@ from PIL import Image
 import numpy as np
 
 class CustomDataset(Dataset):
-    def __init__(self, root_dir=None, mode=None, paths=None, img_height=32, img_width=100):
+    def __init__(self, root_dir=None, mode=None, paths=None, img_height=32, img_width=100, model=None):
         if root_dir and mode and not paths:
             paths, texts = self._load_from_raw_files(root_dir, mode)
+            with open(os.path.join(root_dir, 'chars.txt'), encoding='utf-8') as fr:
+                chars = fr.readline()
+                char_to_label = {char: i+1 for i, char in enumerate(chars)}
+                label_to_char = {label: char for char, label in char_to_label.items()}
         elif not root_dir and not mode and paths:
             texts = None
-        with open(os.path.join(root_dir, 'chars.txt'), encoding='utf-8') as fr:
-            chars = fr.readline()
-            char_to_label = {char: i+1 for i, char in enumerate(chars)}
-            label_to_char = {label: char for char, label in char_to_label.items()}
+            if model:
+                with open(os.path.join('models', model, 'chars.txt'), encoding='utf-8') as fr:
+                    chars = fr.readline()
+                    char_to_label = {char: i+1 for i, char in enumerate(chars)}
+                    label_to_char = {label: char for char, label in char_to_label.items()}
 
         self.chars = chars
         self.char_to_label = char_to_label

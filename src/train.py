@@ -1,11 +1,10 @@
 import os
 
-import cv2
 import torch
 from torch.utils.data import DataLoader
 import torch.optim as optim
 from torch.nn import CTCLoss
-
+from shutil import copyfile
 from dataset import CustomDataset, custom_collate_fn
 from model import CRNN
 from evaluate import evaluate
@@ -32,6 +31,7 @@ def train_batch(crnn, data, optimizer, criterion, device):
 
 
 def main():
+    model = config['model']
     epochs = config['epochs']
     train_batch_size = config['train_batch_size']
     eval_batch_size = config['eval_batch_size']
@@ -66,6 +66,9 @@ def main():
         shuffle=True,
         num_workers=cpu_workers,
         collate_fn=custom_collate_fn)
+
+    os.makedirs(os.path.join('models', model), exist_ok=True)
+    copyfile(os.path.join(data_dir, 'chars.txt'), os.path.join('models', model, 'chars.txt'))
 
     num_class = len(train_dataset.label_to_char) + 1
     crnn = CRNN(1, img_height, img_width, num_class,
@@ -106,8 +109,8 @@ def main():
                 if i % save_interval == 0:
                     prefix = 'crnn'
                     loss = evaluation['loss']
-                    save_model_path = os.path.join(config['checkpoints_dir'],
-                                                   f'{prefix}_{i:06}_loss{loss}.pt')
+                    acc = evaluation['acc']
+                    save_model_path = os.path.join('models', model, f'{prefix}_{i:06}_loss{loss}_acc{acc}.pt')
                     torch.save(crnn.state_dict(), save_model_path)
                     print('save model at ', save_model_path)
 

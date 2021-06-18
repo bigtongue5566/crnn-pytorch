@@ -2,6 +2,7 @@
 
 -h, --help    show this
 -m MODEL     model file [default: ./checkpoints/crnn_synth90k.pt]
+-c CHECKPOINT     checkpoint filename
 -s BS       batch size [default: 256]
 -d DECODE    decode method (greedy, beam_search or prefix_beam_search) [default: beam_search]
 -b BEAM   beam size [default: 10]
@@ -9,6 +10,7 @@
 """
 from docopt import docopt
 import torch
+import os
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 
@@ -53,7 +55,8 @@ def main():
     arguments = docopt(__doc__)
 
     images = arguments['IMAGE']
-    reload_checkpoint = arguments['-m']
+    model = arguments['-m']
+    reload_checkpoint = os.path.join('models', model, arguments['-c'])
     batch_size = int(arguments['-s'])
     decode_method = arguments['-d']
     beam_size = int(arguments['-b'])
@@ -65,7 +68,7 @@ def main():
     print(f'device: {device}')
 
     predict_dataset = CustomDataset(paths=images,
-                                      img_height=img_height, img_width=img_width)
+                                      img_height=img_height, img_width=img_width, model=model)
 
     predict_loader = DataLoader(
         dataset=predict_dataset,
