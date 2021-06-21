@@ -1,6 +1,6 @@
 
 common_config = {
-    'data_dir': 'data/id_card_id_only/',
+    'data_dir': 'data/id_card_issue_only/',
     'img_width': 100,
     'img_height': 32,
     'map_to_seq_hidden': 64,
@@ -9,6 +9,7 @@ common_config = {
 }
 
 train_config = {
+    'model': 'issue',
     'epochs': 5000,
     'train_batch_size': 32,
     'eval_batch_size': 512,

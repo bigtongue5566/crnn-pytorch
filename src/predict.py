@@ -1,8 +1,8 @@
-"""Usage: predict.py [-m MODEL] [-s BS] [-d DECODE] [-b BEAM] [IMAGE ...]
+"""Usage: predict.py [-m MODEL] [-c CHECKPOINT] [-s BS] [-d DECODE] [-b BEAM] [IMAGE ...]
 
 -h, --help    show this
--m MODEL     model file [default: ./checkpoints/crnn_synth90k.pt]
--c CHECKPOINT     checkpoint filename
+-m MODEL     model file [default: id_only]
+-c CHECKPOINT     checkpoint filename [default: id_only.pt]
 -s BS       batch size [default: 256]
 -d DECODE    decode method (greedy, beam_search or prefix_beam_search) [default: beam_search]
 -b BEAM   beam size [default: 10]
